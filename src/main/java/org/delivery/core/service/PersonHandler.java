@@ -49,7 +49,7 @@ public class PersonHandler {
    */
 
   public Optional<Person> getPersonByActive(boolean status) {
-    return personList.stream().filter(p -> !p.isActive()).map(Person::new).findAny();
+    return personList.stream().filter(p -> !p.isActive()).findAny().map(Person::new);
   }
 
   /**
