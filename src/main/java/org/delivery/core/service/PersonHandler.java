@@ -1,6 +1,7 @@
 package org.delivery.core.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.delivery.core.entities.Person;
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PersonHandler {
-  private static final List<PersonEntity> personList = new ArrayList<>();
+  private static final List<PersonEntity> personList =
+      Collections.synchronizedList(new ArrayList<>());
 
   static {
     PersonEntity entity1 = PersonEntity.builder().build();

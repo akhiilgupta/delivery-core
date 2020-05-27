@@ -2,6 +2,7 @@ package org.delivery.core.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.delivery.core.entities.Delivery;
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeliveryHandler {
 
-  private static final List<DeliveryEntity> deliveriesList = new ArrayList<>();
+  private static final List<DeliveryEntity> deliveriesList =
+      Collections.synchronizedList(new ArrayList<>());
 
   /**
    * Get delivery optional by delivery id
