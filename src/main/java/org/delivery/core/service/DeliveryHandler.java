@@ -24,9 +24,10 @@ public class DeliveryHandler {
    */
 
   public Optional<Delivery> getDeliveryById(String deliveryId) {
-
-    return deliveriesList.stream().filter(d -> d.getDeliveryId().equals(deliveryId)).findAny()
-        .map(Delivery::new);
+    synchronized (deliveriesList) {
+      return deliveriesList.stream().filter(d -> d.getDeliveryId().equals(deliveryId)).findAny()
+          .map(Delivery::new);
+    }
   }
 
   /**
@@ -37,14 +38,16 @@ public class DeliveryHandler {
    */
 
   public Optional<Object> updateDelivery(Delivery delivery) {
-    for (DeliveryEntity deliveryEntity : deliveriesList) {
-      if (deliveryEntity.getDeliveryId().equals(delivery.getDeliveryId())) {
-        deliveryEntity.setStatus(delivery.getStatus());
-        deliveryEntity.setDeliveredBy(delivery.getDeliveredBy());
-        return Optional.of(delivery);
+    synchronized (deliveriesList) {
+      for (DeliveryEntity deliveryEntity : deliveriesList) {
+        if (deliveryEntity.getDeliveryId().equals(delivery.getDeliveryId())) {
+          deliveryEntity.setStatus(delivery.getStatus());
+          deliveryEntity.setDeliveredBy(delivery.getDeliveredBy());
+          return Optional.of(delivery);
+        }
       }
+      return Optional.empty();
     }
-    return Optional.empty();
   }
 
   /**

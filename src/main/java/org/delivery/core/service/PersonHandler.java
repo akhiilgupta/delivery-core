@@ -32,14 +32,16 @@ public class PersonHandler {
    */
 
   public Optional<Person> updatePerson(Person person) {
-    for (PersonEntity personEntity : personList) {
-      if (personEntity.getProfileId().equals(person.getProfileId())) {
-        personEntity.setDeliveryIds(person.getDeliveryIds());
-        personEntity.setActive(person.isActive());
-        return Optional.of(person);
+    synchronized (personList) {
+      for (PersonEntity personEntity : personList) {
+        if (personEntity.getProfileId().equals(person.getProfileId())) {
+          personEntity.setDeliveryIds(person.getDeliveryIds());
+          personEntity.setActive(person.isActive());
+          return Optional.of(person);
+        }
       }
+      return Optional.empty();
     }
-    return Optional.empty();
   }
 
   /**
@@ -51,7 +53,9 @@ public class PersonHandler {
    */
 
   public Optional<Person> getPersonByActive(boolean status) {
-    return personList.stream().filter(p -> !p.isActive()).findAny().map(Person::new);
+    synchronized (personList) {
+      return personList.stream().filter(p -> !p.isActive()).findAny().map(Person::new);
+    }
   }
 
   /**
@@ -62,8 +66,10 @@ public class PersonHandler {
    */
 
   public Optional<Person> getPersonById(String profileId) {
-    return personList.stream().filter(p -> p.getProfileId().equals(profileId)).findAny()
-        .map(Person::new);
+    synchronized (personList) {
+      return personList.stream().filter(p -> p.getProfileId().equals(profileId)).findAny()
+          .map(Person::new);
+    }
   }
 
 }
